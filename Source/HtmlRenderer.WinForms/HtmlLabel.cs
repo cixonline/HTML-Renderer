@@ -134,6 +134,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             _htmlContainer.MaxSize = MaximumSize;
             _htmlContainer.LoadComplete += OnLoadComplete;
             _htmlContainer.LinkClicked += OnLinkClicked;
+            _htmlContainer.ContextMenuInvoked += OnContextMenuInvoked;
             _htmlContainer.RenderError += OnRenderError;
             _htmlContainer.Refresh += OnRefresh;
             _htmlContainer.StylesheetLoad += OnStylesheetLoad;
@@ -153,6 +154,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         /// Allows manipulation of the html dom, scroll position, etc.
         /// </summary>
         public event EventHandler LoadComplete;
+
+        /// <summary>
+        /// Raised when the right click context menu is invoked
+        /// </summary>
+        public event EventHandler<HtmlContextMenuEventArgs> ContextMenuInvoked;
 
         /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
@@ -451,6 +457,14 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
                 _htmlContainer.ClearSelection();
         }
 
+        /// <summary>
+        /// Select all text.
+        /// </summary>
+        public void SelectAll()
+        {
+            if (_htmlContainer != null)
+                _htmlContainer.SelectAll(this);
+        }
 
         #region Private methods
 
@@ -596,6 +610,16 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         }
 
         /// <summary>
+        /// Propagate the ContextMenuInvoked event from root container.
+        /// </summary>
+        protected virtual void OnContextMenuInvoked(HtmlContextMenuEventArgs e)
+        {
+            var handler = ContextMenuInvoked;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        /// <summary>
         /// Propagate the LinkClicked event from root container.
         /// </summary>
         protected virtual void OnLinkClicked(HtmlLinkClickedEventArgs e)
@@ -680,6 +704,7 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
             {
                 _htmlContainer.LoadComplete -= OnLoadComplete;
                 _htmlContainer.LinkClicked -= OnLinkClicked;
+                _htmlContainer.ContextMenuInvoked -= OnContextMenuInvoked;
                 _htmlContainer.RenderError -= OnRenderError;
                 _htmlContainer.Refresh -= OnRefresh;
                 _htmlContainer.StylesheetLoad -= OnStylesheetLoad;
@@ -696,6 +721,11 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         private void OnLoadComplete(object sender, EventArgs e)
         {
             OnLoadComplete(e);
+        }
+
+        private void OnContextMenuInvoked(object sender, HtmlContextMenuEventArgs e)
+        {
+            OnContextMenuInvoked(e);
         }
 
         private void OnLinkClicked(object sender, HtmlLinkClickedEventArgs e)

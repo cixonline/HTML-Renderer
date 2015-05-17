@@ -216,6 +216,12 @@ namespace TheArtOfDev.HtmlRenderer.Core
         public event EventHandler LoadComplete;
 
         /// <summary>
+        /// Raised when the context menu is about to be invoked. Allow the
+        /// caller to pre-populate the menu with its own commands.
+        /// </summary>
+        public event EventHandler<HtmlContextMenuEventArgs> ContextMenuInvoked;
+
+        /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
         /// Allows canceling the execution of the link.
         /// </summary>
@@ -468,6 +474,18 @@ namespace TheArtOfDev.HtmlRenderer.Core
             if (_selectionHandler != null)
             {
                 _selectionHandler.ClearSelection();
+                RequestRefresh(false);
+            }
+        }
+
+        /// <summary>
+        /// Select all text.
+        /// </summary>
+        public void SelectAll(RControl parentControl)
+        {
+            if (_selectionHandler != null)
+            {
+                _selectionHandler.SelectAll(parentControl);
                 RequestRefresh(false);
             }
         }
@@ -843,6 +861,27 @@ namespace TheArtOfDev.HtmlRenderer.Core
         }
 
         /// <summary>
+        /// Handle context menu customisation by the caller
+        /// </summary>
+        /// <param name="contextMenu">the context menu to customise</param>
+        internal void HandleContextMenuInvoked(RContextMenu contextMenu)
+        {
+            EventHandler<HtmlContextMenuEventArgs> contextMenuHandler = ContextMenuInvoked;
+            if (contextMenuHandler != null)
+            {
+                var args = new HtmlContextMenuEventArgs(contextMenu);
+                try
+                {
+                    contextMenuHandler(this, args);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error in context menu intercept", ex);
+                }
+            }
+        }
+
+        /// <summary>
         /// Handle link clicked going over <see cref="LinkClicked"/> event and using <see cref="Process.Start()"/> if not canceled.
         /// </summary>
         /// <param name="parent">the control hosting the html to invalidate</param>
@@ -956,6 +995,7 @@ namespace TheArtOfDev.HtmlRenderer.Core
                 if (all)
                 {
                     LinkClicked = null;
+                    ContextMenuInvoked = null;
                     Refresh = null;
                     RenderError = null;
                     StylesheetLoad = null;

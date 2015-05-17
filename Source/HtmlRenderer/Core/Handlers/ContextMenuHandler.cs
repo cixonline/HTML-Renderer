@@ -287,6 +287,13 @@ namespace TheArtOfDev.HtmlRenderer.Core.Handlers
                 _currentLink = link;
                 _contextMenu = _htmlContainer.Adapter.GetContextMenu();
 
+                // Give client a chance to customise the menu
+                _htmlContainer.HandleContextMenuInvoked(_contextMenu);
+                if (_contextMenu.ItemsCount > 0)
+                {
+                    _contextMenu.AddDivider();
+                }
+
                 if (rect != null)
                 {
                     bool isVideo = false;

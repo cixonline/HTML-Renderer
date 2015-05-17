@@ -63,6 +63,7 @@
     <Compile Include="Core\Dom\Border.cs" />
     <Compile Include="Core\Entities\CssBlock.cs" />
     <Compile Include="Core\Entities\CssBlockSelectorItem.cs" />
+    <Compile Include="Core\Entities\HtmlContextMenuEventArgs.cs" />
     <Compile Include="Core\Entities\HtmlGenerationStyle.cs" />
     <Compile Include="Core\Entities\HtmlImageLoadEventArgs.cs" />
     <Compile Include="Core\Entities\HtmlLinkClickedEventArgs.cs" />

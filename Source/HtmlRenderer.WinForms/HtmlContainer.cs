@@ -66,6 +66,15 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         }
 
         /// <summary>
+        /// Raised when the right click context menu is invoked.
+        /// </summary>
+        public event EventHandler<HtmlContextMenuEventArgs> ContextMenuInvoked
+        {
+            add { HtmlContainerInt.ContextMenuInvoked += value; }
+            remove { HtmlContainerInt.ContextMenuInvoked -= value; }
+        }
+
+        /// <summary>
         /// Raised when the user clicks on a link in the html.<br/>
         /// Allows canceling the execution of the link.
         /// </summary>
@@ -303,6 +312,14 @@ namespace TheArtOfDev.HtmlRenderer.WinForms
         public void ClearSelection()
         {
             HtmlContainerInt.ClearSelection();
+        }
+
+        /// <summary>
+        /// Select all text.
+        /// </summary>
+        public void SelectAll(Control parent)
+        {
+            HtmlContainerInt.SelectAll(new ControlAdapter(parent, _useGdiPlusTextRendering));
         }
 
         /// <summary>
